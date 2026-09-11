@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PPC E-SPORTS — Admin</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>body{font-family:Rajdhani,sans-serif;background:#050505;color:#fff}.card{background:#0d0d0d;border:1px solid #272727}input,select{color-scheme:dark}th,td{white-space:nowrap}.modal{background:rgba(0,0,0,.9);backdrop-filter:blur(8px)}</style>
+</head>
+<body>
+<div id="login" class="min-h-screen flex items-center justify-center p-5"><form id="loginForm" class="card rounded-2xl p-8 w-full max-w-md"><div class="text-yellow-400 text-xs tracking-[.3em]">👑 PPC E-SPORTS</div><h1 class="text-4xl font-bold mt-2">ADMIN CONTROL</h1><p class="text-gray-500 mt-2">Private tournament management</p><input id="password" type="password" class="mt-6 w-full bg-black border border-white/10 rounded-lg p-3" placeholder="Admin password" required><button class="w-full mt-4 bg-red-600 hover:bg-red-500 rounded-lg py-3 font-bold">LOGIN</button><p id="loginErr" class="text-red-500 mt-3 hidden">Wrong password.</p></form></div>
+
+<div id="app" class="hidden">
+<header class="sticky top-0 z-20 bg-black/90 backdrop-blur border-b border-red-900/30"><div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center"><div><b class="text-yellow-400">PPC E-SPORTS</b><span class="text-gray-500 ml-2">ADMIN</span></div><div class="flex gap-2"><a href="index.html" class="border border-white/10 px-4 py-2 rounded">Public Site</a><button onclick="logout()" class="border border-red-700 text-red-400 px-4 py-2 rounded">Logout</button></div></div></header>
+<main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
+<section class="card rounded-2xl p-6"><div class="flex justify-between"><div><p class="text-red-500 font-bold">GLOBAL CONTROL</p><h2 class="text-3xl font-bold">Settings</h2></div><button onclick="saveSettings()" class="bg-red-600 px-5 py-2 rounded font-bold">Save Settings</button></div>
+<div class="grid md:grid-cols-2 gap-4 mt-6">
+<label>Admin WhatsApp Number<input id="adminNumber" class="mt-2 w-full bg-black border border-white/10 rounded p-3" placeholder="10 digit number"></label>
+<label>UPI ID<input id="upiId" class="mt-2 w-full bg-black border border-white/10 rounded p-3" placeholder="piyush@upi"></label>
+<label>QR Image URL<input id="qrUrl" class="mt-2 w-full bg-black border border-white/10 rounded p-3" placeholder="https://.../qr.png" oninput="previewQR()"></label>
+<label>WhatsApp Group Link<input id="whatsappGroup" class="mt-2 w-full bg-black border border-white/10 rounded p-3"></label>
+<label>YouTube Channel Link<input id="youtube" class="mt-2 w-full bg-black border border-white/10 rounded p-3"></label>
+<label>Instagram Link<input id="instagram" class="mt-2 w-full bg-black border border-white/10 rounded p-3"></label>
+</div><div class="mt-5 bg-white rounded-xl p-4 w-fit"><img id="qrPreview" class="w-48 h-48 object-contain" alt="QR preview"></div></section>
+
+<section class="card rounded-2xl p-6"><div class="flex justify-between items-center"><div><p class="text-red-500 font-bold">EVENT CONTROL</p><h2 class="text-3xl font-bold">Create / Edit Event</h2></div><button onclick="resetEvent()" class="border border-white/10 px-4 py-2 rounded">New</button></div>
+<form id="eventForm" class="grid md:grid-cols-4 gap-4 mt-6"><input type="hidden" id="eventId">
+<label class="md:col-span-2">Event Title<input id="eventTitle" required class="mt-2 w-full bg-black border border-white/10 rounded p-3"></label>
+<label>Date<input id="eventDate" type="date" required class="mt-2 w-full bg-black border border-white/10 rounded p-3"></label>
+<label>Time<input id="eventTime" type="time" value="20:30" required class="mt-2 w-full bg-black border border-white/10 rounded p-3"></label>
+<label>Map<select id="eventMap" class="mt-2 w-full bg-black border border-white/10 rounded p-3"><option>Bermuda</option><option>Purgatory</option><option>Kalahari</option></select></label>
+<label>Mode<select id="eventMode" class="mt-2 w-full bg-black border border-white/10 rounded p-3"><option>Solo</option><option>Duo</option><option>Squad</option></select></label>
+<label>Max Players<input id="maxPlayers" type="number" value="48" min="1" class="mt-2 w-full bg-black border border-white/10 rounded p-3"></label>
+<label>Entry Fee<input id="entryFee" type="number" value="50" min="0" class="mt-2 w-full bg-black border border-white/10 rounded p-3"></label>
+<label>Prize 1st<input id="prize1" type="number" class="mt-2 w-full bg-black border border-white/10 rounded p-3"></label>
+<label>Prize 2nd<input id="prize2" type="number" class="mt-2 w-full bg-black border border-white/10 rounded p-3"></label>
+<label>Prize 3rd<input id="prize3" type="number" class="mt-2 w-full bg-black border border-white/10 rounded p-3"></label>
+<label>Per Kill<input id="perKill" type="number" class="mt-2 w-full bg-black border border-white/10 rounded p-3"></label>
+<label>Status<select id="eventStatus" class="mt-2 w-full bg-black border border-white/10 rounded p-3"><option>Upcoming</option><option>Live</option><option>Completed</option></select></label>
+<button class="md:col-span-4 bg-red-600 py-3 rounded font-bold">Add / Update Event</button></form>
+<div class="overflow-x-auto mt-7"><table class="w-full text-left text-sm"><thead><tr class="border-b border-white/10 text-gray-500"><th class="p-3">Event</th><th>Date</th><th>Map</th><th>Mode</th><th>Slots</th><th>Fee</th><th>Status</th><th>Actions</th></tr></thead><tbody id="eventRows"></tbody></table></div></section>
+
+<section class="card rounded-2xl p-6"><div class="flex flex-wrap justify-between gap-4 items-center"><div><p class="text-red-500 font-bold">REGISTRATIONS CONTROL</p><h2 class="text-3xl font-bold">Entries</h2></div><div class="flex gap-4"><div class="text-center"><div id="regCount" class="text-2xl font-bold">0</div><small class="text-gray-500">ENTRIES</small></div><div class="text-center"><div id="collection" class="text-2xl font-bold text-yellow-400">₹0</div><small class="text-gray-500">COLLECTION</small></div><div class="text-center"><div id="profit" class="text-2xl font-bold text-green-400">₹0</div><small class="text-gray-500">PROFIT</small></div><button onclick="exportCSV()" class="border border-white/10 px-4 py-2 rounded">Export CSV</button></div></div>
+<div class="overflow-x-auto mt-6"><table class="w-full text-left text-sm"><thead><tr class="border-b border-white/10 text-gray-500"><th class="p-3">#</th><th>Name</th><th>UID</th><th>Level</th><th>Rank</th><th>WhatsApp</th><th>Txn</th><th>Payment</th><th>ID</th><th>Status</th><th>Date</th><th>Action</th></tr></thead><tbody id="regRows"></tbody></table></div></section>
+</main></div>
+
+<div id="imgModal" class="hidden fixed inset-0 z-50 modal items-center justify-center p-5" onclick="closeImg()"><div class="max-w-3xl max-h-[90vh]"><img id="modalImg" class="max-h-[85vh] max-w-full object-contain rounded-xl"></div></div>
+<script>
+const ADMIN_PASSWORD="piyush@123";
+const $=id=>document.getElementById(id);
+function getSettings(){return JSON.parse(localStorage.getItem("ppc_settings")||"{}")}
+function getEvents(){return JSON.parse(localStorage.getItem("ppc_events")||"[]")}
+function getRegs(){return JSON.parse(localStorage.getItem("ppc_registrations")||"[]")}
+function money(n){return "₹"+Number(n||0).toLocaleString("en-IN")}
+$("loginForm").onsubmit=e=>{e.preventDefault();if($("password").value===ADMIN_PASSWORD){sessionStorage.setItem("ppc_admin","1");showApp()}else $("loginErr").classList.remove("hidden")}
+function showApp(){ $("login").classList.add("hidden");$("app").classList.remove("hidden");loadSettings();renderEvents();renderRegs();resetEvent()}
+function logout(){sessionStorage.removeItem("ppc_admin");location.reload()}
+if(sessionStorage.getItem("ppc_admin")==="1")showApp();
+function loadSettings(){const s=getSettings();["adminNumber","upiId","qrUrl","whatsappGroup","youtube","instagram"].forEach(k=>$(k).value=s[k]||"");previewQR()}
+function saveSettings(){const s={adminNumber:$("adminNumber").value.trim().replace(/\D/g,""),upiId:$("upiId").value.trim(),qrUrl:$("qrUrl").value.trim(),whatsappGroup:$("whatsappGroup").value.trim(),youtube:$("youtube").value.trim(),instagram:$("instagram").value.trim()};localStorage.setItem("ppc_settings",JSON.stringify(s));alert("Settings saved.")}
+function previewQR(){const im=$("qrPreview");im.src=$("qrUrl").value||"";im.onerror=()=>im.alt="QR preview unavailable"}
+function resetEvent(){ $("eventForm").reset();$("eventId").value="";$("eventTime").value="20:30";$("maxPlayers").value=48;$("entryFee").value=50;$("eventStatus").value="Upcoming"}
+$("eventForm").onsubmit=e=>{e.preventDefault();let a=getEvents(),id=$("eventId").value||Date.now().toString(),old=a.find(x=>x.id===id);let ev={id,title:$("eventTitle").value,date:$("eventDate").value,time:$("eventTime").value,map:$("eventMap").value,mode:$("eventMode").value,maxPlayers:+$("maxPlayers").value,entryFee:+$("entryFee").value,prize1:+$("prize1").value,prize2:+$("prize2").value,prize3:+$("prize3").value,perKill:+$("perKill").value,status:$("eventStatus").value,slotsFilled:old?.slotsFilled||0};const i=a.findIndex(x=>x.id===id);if(i>=0)a[i]=ev;else a.push(ev);localStorage.setItem("ppc_events",JSON.stringify(a));renderEvents();resetEvent();alert("Event saved.")}
+function renderEvents(){const a=getEvents();$("eventRows").innerHTML=a.map(e=>`<tr class="border-b border-white/5"><td class="p-3 font-bold">${e.title}</td><td>${e.date} ${e.time}</td><td>${e.map}</td><td>${e.mode}</td><td>${e.slotsFilled||0}/${e.maxPlayers}</td><td>${money(e.entryFee)}</td><td>${e.status}</td><td><button class="text-yellow-400 mr-3" onclick="editEvent('${e.id}')">Edit</button><button class="text-red-400" onclick="deleteEvent('${e.id}')">Delete</button></td></tr>`).join("")||'<tr><td class="p-3 text-gray-500" colspan="8">No events.</td></tr>'}
+function editEvent(id){const e=getEvents().find(x=>x.id===id);if(!e)return;$("eventId").value=e.id;["eventTitle","eventDate","eventTime","eventMap","eventMode","maxPlayers","entryFee","prize1","prize2","prize3","perKill","eventStatus"].forEach(k=>$(k).value=e[{eventTitle:"title",eventDate:"date",eventTime:"time",eventMap:"map",eventMode:"mode",maxPlayers:"maxPlayers",entryFee:"entryFee",prize1:"prize1",prize2:"prize2",prize3:"prize3",perKill:"perKill",eventStatus:"status"}[k]])}
+function deleteEvent(id){if(!confirm("Delete this event?"))return;localStorage.setItem("ppc_events",JSON.stringify(getEvents().filter(x=>x.id!==id)));renderEvents()}
+function renderRegs(){const a=getRegs();$("regCount").textContent=a.length;const collection=a.reduce((s,r)=>s+Number(r.fee||0),0);$("collection").textContent=money(collection);const evs=getEvents();const prize=evs.reduce((s,e)=>s+Number(e.prize1||0)+Number(e.prize2||0)+Number(e.prize3||0),0);$("profit").textContent=money(collection-prize);
+$("regRows").innerHTML=a.map((r,i)=>`<tr class="border-b border-white/5"><td class="p-3">${i+1}</td><td>${r.name}</td><td>${r.uid}</td><td>${r.level}</td><td>${r.rank}</td><td>${r.phone}</td><td>${r.txn}</td><td><button class="text-yellow-400" onclick="viewImg(${i},'paymentProof')">View</button></td><td><button class="text-yellow-400" onclick="viewImg(${i},'idProof')">View</button></td><td>${r.status}<br><button class="text-green-400" onclick="verifyReg('${r.id}')">Mark Verified</button></td><td>${new Date(r.createdAt).toLocaleString()}</td><td><button class="text-red-400" onclick="deleteReg('${r.id}')">Delete</button></td></tr>`).join("")||'<tr><td class="p-3 text-gray-500" colspan="12">No registrations.</td></tr>'}
+function viewImg(i,key){const r=getRegs()[i];$("modalImg").src=r[key];$("imgModal").classList.remove("hidden");$("imgModal").classList.add("flex")}
+function closeImg(){$("imgModal").classList.add("hidden");$("imgModal").classList.remove("flex")}
+function verifyReg(id){const a=getRegs();const r=a.find(x=>x.id===id);if(r)r.status="Verified";localStorage.setItem("ppc_registrations",JSON.stringify(a));renderRegs()}
+function deleteReg(id){if(!confirm("Delete registration?"))return;localStorage.setItem("ppc_registrations",JSON.stringify(getRegs().filter(x=>x.id!==id)));renderRegs()}
+function exportCSV(){const a=getRegs();const cols=["Name","UID","Level","Rank","WhatsApp","Txn","Fee","Status","Date","Event"];const esc=v=>`"${String(v??"").replaceAll('"','""')}"`;const rows=a.map(r=>[r.name,r.uid,r.level,r.rank,r.phone,r.txn,r.fee,r.status,r.createdAt,r.event].map(esc).join(","));const blob=new Blob([[cols.map(esc).join(","),...rows].join("\n")],{type:"text/csv"});const u=URL.createObjectURL(blob),x=document.createElement("a");x.href=u;x.download="ppc-registrations.csv";x.click();URL.revokeObjectURL(u)}
+</script>
+</body>
+</html>
